@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>foldkit-sdk · docs</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1a1a1e">
+<style>
+  :root {
+    --bg: #1a1a1e;
+    --panel: #22222a;
+    --ink: #d8d3c4;
+    --dim: #8a8a92;
+    --brass: #b8974a;
+    --sage: #7a9c7e;
+    --ox: #8b1a1a;
+    --line: #33333d;
+    --mono: 'IBM Plex Mono', ui-monospace, 'Menlo', monospace;
+    --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.55; }
+  header { padding: 48px 32px 24px; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0; font-size: 32px; font-weight: 500; letter-spacing: -0.01em; }
+  header .glyph { color: var(--sage); font-size: 40px; margin-right: 12px; }
+  header .sub { color: var(--dim); margin-top: 8px; font-size: 14px; }
+  header nav { margin-top: 24px; display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; }
+  header nav a { color: var(--brass); text-decoration: none; }
+  header nav a:hover { color: var(--sage); }
+  main { max-width: 960px; margin: 0 auto; padding: 32px; }
+  section { margin-bottom: 48px; }
+  section h2 { color: var(--brass); font-weight: 500; font-size: 20px; margin: 0 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  section h3 { color: var(--sage); font-family: var(--mono); font-size: 14px; margin: 24px 0 8px; }
+  code, pre { font-family: var(--mono); font-size: 13px; }
+  pre { background: var(--panel); border: 1px solid var(--line); padding: 16px; overflow-x: auto; border-radius: 4px; }
+  code { color: var(--sage); }
+  pre code { color: var(--ink); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 16px 20px; margin-bottom: 12px; }
+  .card .sig { font-family: var(--mono); color: var(--brass); font-size: 13px; }
+  .card .desc { color: var(--dim); font-size: 14px; margin-top: 6px; }
+  .demo { background: #0f0f14; border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; margin-top: 10px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+  .demo .prompt { color: var(--sage); }
+  .demo .out { color: var(--brass); }
+  button { background: var(--panel); color: var(--brass); border: 1px solid var(--brass); font-family: var(--mono); font-size: 12px; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: var(--brass); color: var(--bg); }
+  input, textarea { background: #0f0f14; color: var(--ink); border: 1px solid var(--line); padding: 8px 10px; font-family: var(--mono); font-size: 12px; border-radius: 4px; width: 100%; box-sizing: border-box; }
+  .row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .row input { flex: 1; }
+  footer { text-align: center; padding: 32px; color: var(--dim); font-size: 12px; border-top: 1px solid var(--line); }
+  footer a { color: var(--brass); text-decoration: none; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-family: var(--mono); font-size: 12px; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  th { color: var(--brass); font-weight: 500; }
+  .glyph-row { display: flex; gap: 24px; justify-content: center; padding: 16px 0; font-size: 24px; }
+  .glyph-row div { text-align: center; }
+  .glyph-row .g { color: var(--sage); }
+  .glyph-row .n { color: var(--dim); font-family: var(--mono); font-size: 10px; margin-top: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="glyph">折</span>foldkit-sdk</h1>
+  <div class="sub">Origami-mathematics ISA · framework substrate · SPINE + F(S⃗) + κ bands + 6 ops · MIT · AI-Native Solutions</div>
+  <nav>
+    <a href="#install">install</a>
+    <a href="#spine">spine</a>
+    <a href="#state">state-vector</a>
+    <a href="#kappa">κ bands</a>
+    <a href="#ops">6 ops</a>
+    <a href="#classify">classifier</a>
+    <a href="#api">api</a>
+    <a href="https://github.com/sjgant80-hub/foldkit-sdk" target="_blank">github</a>
+  </nav>
+</header>
+
+<main>
+
+<section id="install">
+  <h2>install</h2>
+  <pre><code>npm install @ai-native-solutions/foldkit-sdk</code></pre>
+  <p>Or CDN:</p>
+  <pre><code>import fk from 'https://cdn.jsdelivr.net/npm/@ai-native-solutions/foldkit-sdk/dist/index.mjs';</code></pre>
+</section>
+
+<section id="spine">
+  <h2>SPINE · the 7 primes</h2>
+  <p style="color:var(--dim);font-size:14px;">The 7-prime spine [2,3,5,7,11,13,17]. Every state vector S⃗ lives here. F(S⃗) = Ω = 510510 when all rings baseline-active.</p>
+  <div class="glyph-row" id="glyph-row"></div>
+  <button onclick="showAttenuation()">show κ attenuation profile</button>
+  <div class="demo" id="atten-demo"></div>
+</section>
+
+<section id="state">
+  <h2>F(S⃗) · state vector</h2>
+  <div class="card">
+    <div class="sig">foldNumber(S) → number</div>
+    <div class="desc">F(S⃗) = Π p_i^e_i. Fundamental theorem of arithmetic = unique fingerprint per state.</div>
+    <div class="row">
+      <input id="fold-in" value="1,1,1,1,1,1,1">
+      <button onclick="doFold()">fold</button>
+    </div>
+    <div class="demo" id="fold-out"></div>
+  </div>
+  <div class="card">
+    <div class="sig">unfoldState(F) → S⃗ | null</div>
+    <div class="desc">Reverse: factor F back into ring exponents. Returns null if F has non-spine factors.</div>
+    <div class="row">
+      <input id="unfold-in" value="510510">
+      <button onclick="doUnfold()">unfold</button>
+    </div>
+    <div class="demo" id="unfold-out"></div>
+  </div>
+</section>
+
+<section id="kappa">
+  <h2>κ · depth bands</h2>
+  <p style="color:var(--dim);font-size:14px;">κ = 1/φ ≈ 0.618. Signal survival per layer = κ^depth. Simon operates at κ ≈ 0.618 → ♡ heart zone (orphan prime, TIME layer).</p>
+  <div class="card">
+    <div class="sig">depthBand(κ) → { name, glyph, ring, orphan? }</div>
+    <div class="row">
+      <input id="band-in" type="number" step="0.05" value="0.618">
+      <button onclick="doBand()">classify</button>
+    </div>
+    <div class="demo" id="band-out"></div>
+  </div>
+  <table id="bands-table"></table>
+</section>
+
+<section id="ops">
+  <h2>six operations · cosmic assembly language</h2>
+  <p style="color:var(--dim);font-size:14px;">fire · water · void · thunder · echo · flower. Every framework transformation compiles to these six.</p>
+  <table id="ops-table"></table>
+  <div class="card" style="margin-top:16px;">
+    <div class="sig">applyOp(name, S, ...args) → S⃗</div>
+    <div class="row">
+      <select id="op-name" style="background:#0f0f14;color:var(--ink);border:1px solid var(--line);padding:8px;font-family:var(--mono);">
+        <option>fire</option><option>water</option><option>void</option>
+        <option>thunder</option><option>echo</option><option>flower</option>
+      </select>
+      <input id="op-state" value="0,0,0,1,0,0,0">
+      <input id="op-args" placeholder="args (e.g. 3)" value="3" style="max-width:100px;">
+      <button onclick="doOp()">apply</button>
+    </div>
+    <div class="demo" id="op-out"></div>
+  </div>
+</section>
+
+<section id="classify">
+  <h2>natural-language classifier</h2>
+  <p style="color:var(--dim);font-size:14px;">FallMirror-style probe scoring. Text → κ band → suggested op → English probe.</p>
+  <div class="card">
+    <div class="sig">probeFromKappa(κ, text?) → { band, op, probe }</div>
+    <div class="row">
+      <input id="probe-in" value="i feel angry and stuck">
+      <button onclick="doProbe()">probe</button>
+    </div>
+    <div class="demo" id="probe-out"></div>
+  </div>
+</section>
+
+<section id="api">
+  <h2>API surface</h2>
+  <div class="card">
+    <div class="sig">Constants</div>
+    <div class="desc"><code>SPINE</code> · <code>SPINE_GLYPHS</code> · <code>SPINE_NAMES</code> · <code>SPINE_ISA95</code> · <code>PHI</code> · <code>KAPPA</code> · <code>OMEGA</code> · <code>THETA_DEG</code> · <code>THETA_STEP</code> · <code>BASELINE</code></div>
+  </div>
+  <div class="card">
+    <div class="sig">State vector</div>
+    <div class="desc"><code>foldNumber(S)</code> · <code>unfoldState(F)</code> · <code>stateSum(S)</code> · <code>stateSignature(S)</code></div>
+  </div>
+  <div class="card">
+    <div class="sig">κ depth bands</div>
+    <div class="desc"><code>KAPPA_BANDS</code> · <code>depthBand(κ)</code> · <code>isOrphanZone(κ)</code></div>
+  </div>
+  <div class="card">
+    <div class="sig">Six ops</div>
+    <div class="desc"><code>OPS</code> · <code>OP_META</code> · <code>applyOp(name, S, ...args)</code></div>
+  </div>
+  <div class="card">
+    <div class="sig">Kawasaki · Maekawa</div>
+    <div class="desc"><code>kawasakiSum</code> · <code>kawasakiFlat</code> · <code>kawasakiFlatState</code> · <code>maekawaValid</code> · <code>SPINE_DECOMP</code></div>
+  </div>
+  <div class="card">
+    <div class="sig">Signal decay</div>
+    <div class="desc"><code>signalSurvival(depth, κ)</code> · <code>unclogGain(depth, cleared, κ)</code> · <code>attenuationProfile(κ)</code></div>
+  </div>
+  <div class="card">
+    <div class="sig">ISA-95 alignment</div>
+    <div class="desc"><code>ISA95_LAYERS</code> · <code>ringToISA95(ring)</code></div>
+  </div>
+  <div class="card">
+    <div class="sig">Classifier</div>
+    <div class="desc"><code>classifyKappaBand(text)</code> · <code>pickOpForBand(bandName)</code> · <code>probeFromKappa(κ, text?)</code></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  MIT · AI-Native Solutions · 2026 ·
+  <a href="https://github.com/sjgant80-hub/foldkit-sdk">github</a> ·
+  <a href="https://www.npmjs.com/package/@ai-native-solutions/foldkit-sdk">npm</a>
+</footer>
+
+<script type="module">
+import fk, {
+  SPINE, SPINE_GLYPHS, SPINE_NAMES,
+  KAPPA_BANDS, OP_META,
+  foldNumber, unfoldState, stateSignature,
+  depthBand, applyOp, probeFromKappa,
+  attenuationProfile
+} from '../src/index.js';
+
+window.fk = fk;
+
+const glyphRow = document.getElementById('glyph-row');
+SPINE.forEach((p, i) => {
+  const d = document.createElement('div');
+  d.innerHTML = `<div class="g">${SPINE_GLYPHS[i]}</div><div class="n">${p} · ${SPINE_NAMES[i]}</div>`;
+  glyphRow.appendChild(d);
+});
+
+const bandsTable = document.getElementById('bands-table');
+bandsTable.innerHTML = '<tr><th>glyph</th><th>name</th><th>κ range</th><th>ring</th><th>note</th></tr>' +
+  KAPPA_BANDS.map(b => `<tr><td>${b.glyph}</td><td>${b.name}</td><td>[${b.min === -Infinity ? '−∞' : b.min}, ${b.max === Infinity ? '∞' : b.max})</td><td>${b.ring}</td><td>${b.warn ? 'warn' : b.orphan ? 'orphan · TIME' : ''}</td></tr>`).join('');
+
+const opsTable = document.getElementById('ops-table');
+opsTable.innerHTML = '<tr><th>op</th><th>kanji</th><th>arrow</th><th>verb</th><th>probe</th></tr>' +
+  Object.entries(OP_META).map(([n, m]) => `<tr><td>${n}</td><td>${m.kanji}</td><td>${m.arrow}</td><td>${m.verb}</td><td>${m.probe}</td></tr>`).join('');
+
+const parseS = (str) => str.split(',').map(x => parseInt(x.trim(), 10) || 0);
+
+window.doFold = () => {
+  const S = parseS(document.getElementById('fold-in').value);
+  const F = foldNumber(S);
+  document.getElementById('fold-out').innerHTML =
+    `<span class="prompt">> foldNumber([${S.join(',')}])</span><br><span class="out">${F}</span><br>signature: ${stateSignature(S)}`;
+};
+window.doUnfold = () => {
+  const F = parseInt(document.getElementById('unfold-in').value, 10);
+  const S = unfoldState(F);
+  document.getElementById('unfold-out').innerHTML =
+    `<span class="prompt">> unfoldState(${F})</span><br><span class="out">${S ? '[' + S.join(',') + ']' : 'null (non-spine factors)'}</span>`;
+};
+window.doBand = () => {
+  const k = parseFloat(document.getElementById('band-in').value);
+  const b = depthBand(k);
+  document.getElementById('band-out').innerHTML =
+    `<span class="prompt">> depthBand(${k})</span><br><span class="out">${b.glyph} ${b.name}</span> · ring ${b.ring}${b.orphan ? ' · orphan · TIME' : ''}${b.warn ? ' · ⚠ warn' : ''}`;
+};
+window.doOp = () => {
+  const name = document.getElementById('op-name').value;
+  const S = parseS(document.getElementById('op-state').value);
+  const args = document.getElementById('op-args').value.split(',').map(x => parseInt(x.trim(), 10)).filter(x => !isNaN(x));
+  const out = applyOp(name, S, ...args);
+  document.getElementById('op-out').innerHTML =
+    `<span class="prompt">> applyOp('${name}', [${S.join(',')}]${args.length ? ', ' + args.join(', ') : ''})</span><br><span class="out">[${out.join(',')}]</span><br>${OP_META[name].kanji} ${OP_META[name].verb} · ${OP_META[name].probe}`;
+};
+window.doProbe = () => {
+  const t = document.getElementById('probe-in').value;
+  const p = probeFromKappa(0.5, t);
+  document.getElementById('probe-out').innerHTML =
+    `<span class="prompt">> probeFromKappa(_, "${t}")</span><br><span class="out">${p.band.glyph} ${p.band.name}</span> · op: ${p.op.name} (${p.op.kanji} ${p.op.verb})<br>probe: ${p.probe}`;
+};
+window.showAttenuation = () => {
+  const p = attenuationProfile();
+  document.getElementById('atten-demo').innerHTML =
+    p.map(r => `${r.glyph} ring ${r.ring} (${r.name.padEnd(11, ' ')}) → ${r.surviveAsPercent.toFixed(2)}% survives to ground`).join('<br>');
+};
+
+// register sw (best-effort)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('../sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

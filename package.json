@@ -1,0 +1,25 @@
+{
+  "name": "@ai-native-solutions/foldkit-sdk",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Origami-mathematics ISA · framework substrate · SPINE + F(S⃗) + κ bands + 6 ops",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
+  "files": ["src/", "dist/", "README.md", "LICENSE"],
+  "keywords": ["sovereign", "estate", "isa", "konomi", "framework"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sjgant80-hub/foldkit-sdk.git"
+  },
+  "homepage": "https://sjgant80-hub.github.io/foldkit-sdk/",
+  "publishConfig": {
+    "access": "public"
+  }
+}
