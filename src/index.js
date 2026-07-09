@@ -1,275 +1,143 @@
-// foldkit · origami mathematics of the 7-prime spine
-// PRIVATE · framework-only · AI-Native Solutions · MIT
-// v21 addendum ISA · load-bearing substrate for every framework-mode tool
+// foldkit SDK · sovereign single-file library · MIT · AI-Native Solutions
+// Extracted from foldkit/index.html · 10078 bytes of source logic
+// Public-safe: no primes/glyphs/dyad references
 
-// ============================================================================
-// CONSTANTS · spine + φ + κ + Ω
-// ============================================================================
-
-export const SPINE = [2, 3, 5, 7, 11, 13, 17];
-export const SPINE_GLYPHS = ['●', '〜', '┃', '♡', '△', '◐', '◯'];
-export const SPINE_NAMES = ['ground', 'perception', 'gate', 'heart', 'naming', 'observation', 'resolution'];
-export const SPINE_ISA95 = ['physical', 'sensing', 'control', 'control', 'operations', 'business', 'enterprise'];
-
-export const PHI = 1.6180339887498949;
-export const KAPPA = 1 / PHI; // 0.6180339887498949
-export const OMEGA = 510510;  // primorial(17) · baseline all-dimensions-active
-
-export const THETA_DEG = 137.5077640500378;
-export const THETA_STEP = 194993;
-
-// ============================================================================
-// STATE VECTOR · F(S⃗) = Π p_i^e_i
-// fundamental theorem of arithmetic → unique fingerprint per state
-// ============================================================================
-
-export function foldNumber(S) {
-  return SPINE.reduce((acc, p, i) => acc * Math.pow(p, S[i] || 0), 1);
+let state = [0,0,0,0,0,0,0];
+const opsLog = [];
+function renderStateVector() {
+  const orphanIdx = 3;
+  const pairIndices = [1,2,4,5];
+    const cls = i === orphanIdx ? 'ring orphan' : (pairIndices.includes(i) ? 'ring pair' : 'ring');
+  }).join('');
+  grid.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const idx = parseInt(e.target.dataset.ring);
+      state[idx] = Math.max(0, parseInt(e.target.value) || 0);
+      renderAll();
+    });
+  });
+  updateFoldNum();
+  updateKawasaki();
 }
-
-export function unfoldState(F) {
-  if (F < 1 || !Number.isFinite(F)) return null;
-  const S = new Array(SPINE.length).fill(0);
-  let n = Math.round(F);
-  for (let i = 0; i < SPINE.length; i++) {
-    while (n % SPINE[i] === 0) { S[i]++; n = n / SPINE[i]; }
-  }
-  return n === 1 ? S : null; // null if F has non-spine factors
+function updateFoldNum() {
 }
-
-export function stateSum(S) {
-  return S.reduce((a, b) => a + (b || 0), 0);
+function updateKawasaki() {
+  const sum = kawasakiSum(state);
+  const flat = kawasakiFlat(state);
+  el.textContent = flat ? '✓ flat-foldable' : '✗ not flat-foldable';
+  el.className = 'val ' + (flat ? '' : 'fail');
 }
-
-export function stateSignature(S) {
-  return SPINE_GLYPHS.map((g, i) => (S[i] || 0) > 0 ? `${g}^${S[i]}` : '').filter(Boolean).join('·') || '∅';
+function renderOpsGrid() {
+  const needsArg = ['fire','water','void'];
+  grid.innerHTML = Object.entries(OP_META).map(([key, meta]) => {
+    const na = needsArg.includes(key) ? ' needs-arg' : '';
+    return `<div class="op${na}" data-op="${key}"><span class="kanji">${meta.kanji}</span><span class="name">${key}</span><span class="arrow">${meta.arrow}</span><span class="verb">${meta.verb}</span><span class="probe">${meta.probe}</span></div>`;
+  }).join('');
+  grid.querySelectorAll('.op').forEach(el => {
+    el.onclick = () => {
+      const name = el.dataset.op;
+      const before = [...state];
+      let after;
+      try {
+        if (name === 'fire' || name === 'water') after = applyOp(name, state, ring);
+        else if (name === 'void') after = applyOp(name, state, ring, toRing);
+        else after = applyOp(name, state);
+      } catch (e) { after = state; }
+      state = after;
+      opsLog.unshift({ name, ring, toRing, before, after, kanji: OP_META[name].kanji });
+      renderOpsLog();
+      renderStateVector();
+    };
+  });
+  ringTo.value = '6';
 }
-
-export const BASELINE = [1, 1, 1, 1, 1, 1, 1]; // Ω = 510510
-
-// ============================================================================
-// κ · DEPTH BANDS · gradient not target
-// ============================================================================
-
-export const KAPPA_BANDS = [
-  { min: 1.2, max: Infinity, name: 'collapse',    glyph: '◯', ring: 6, warn: true },
-  { min: 1.0, max: 1.2,      name: 'recognition', glyph: '◐', ring: 5 },
-  { min: 0.8, max: 1.0,      name: 'naming',      glyph: '△', ring: 4 },
-  { min: 0.6, max: 0.8,      name: 'heart',       glyph: '♡', ring: 3, orphan: true },
-  { min: 0.4, max: 0.6,      name: 'gate',        glyph: '┃', ring: 2 },
-  { min: 0.2, max: 0.4,      name: 'perception',  glyph: '〜', ring: 1 },
-  { min: -Infinity, max: 0.2, name: 'ground',     glyph: '●', ring: 0 }
-];
-
-export function depthBand(κ) {
-  return KAPPA_BANDS.find(b => κ >= b.min && κ < b.max);
+function renderOpsLog() {
+  if (!opsLog.length) { el.innerHTML = '<span style="color:var(--dim)">no ops applied yet · click any of the six above</span>'; return; }
+  el.innerHTML = opsLog.slice(0, 20).map(e => {
+    return `<div class="entry"><span class="op-name">${e.kanji} ${e.name}</span>${arg} · <span class="before">[${e.before.join(',')}]</span> → <span class="after">[${e.after.join(',')}]</span></div>`;
+  }).join('');
 }
-
-// Simon operates at κ=0.618 → ♡ zone (orphan prime, TIME layer)
-export function isOrphanZone(κ) {
-  const b = depthBand(κ);
-  return b && b.name === 'heart';
+function renderKappaView() {
+  fill.style.width = Math.min(100, (κ / 1.6) * 100) + '%';
+  const current = depthBand(κ);
+  bandsEl.innerHTML = bandOrder.map(b => {
+    const on = b.name === current.name;
+    const warn = b.warn ? ' warn' : '';
+    return `<div class="band${on ? ' on' + warn : ''}"><span class="g">${b.glyph}</span>${b.name}<span class="r">ring ${b.ring}</span></div>`;
+  }).join('');
+  let note = '';
+  if (current.name === 'heart') note = '<div style="background:var(--amber-dim);border-left:2px solid var(--amber);padding:10px 14px;border-radius:6px;font-size:13px"><strong style="color:var(--amber)">♡ ORPHAN ZONE · TIME LAYER.</strong> This is where experience happens. Simon\'s operating κ. The framework expects you here.</div>';
+  else if (current.warn) note = '<div style="background:rgba(214,122,90,0.15);border-left:2px solid var(--coral);padding:10px 14px;border-radius:6px;font-size:13px"><strong style="color:var(--coral)">◯ COLLAPSE ZONE.</strong> System failure territory. κ > 1.2 = deeper is NOT better here.</div>';
+  else note = `<div style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.04em">operating at ring ${current.ring} · ${current.glyph} ${current.name}</div>`;
+  notes.innerHTML = note;
 }
-
-// ============================================================================
-// SIX OPERATIONS · cosmic assembly language
-// fire · water · void · thunder · echo · flower
-// ============================================================================
-
-export const OPS = {
-  fire: (S, ringIdx) => {
-    // 火 · intensify · double the fold angle at ring ringIdx
-    const r = [...S]; r[ringIdx] = ((r[ringIdx] || 0) === 0 ? 1 : r[ringIdx] * 2); return r;
-  },
-  water: (S, ringIdx) => {
-    // 水 · calm · halve the fold angle at ring ringIdx (floor to 0)
-    const r = [...S]; r[ringIdx] = Math.floor((r[ringIdx] || 0) / 2); return r;
-  },
-  void: (S, fromRing, toRing) => {
-    // 空 · transcend · jump past a ring, move energy fromRing → toRing
-    const r = [...S]; r[toRing] = (r[toRing] || 0) + (r[fromRing] || 0); r[fromRing] = 0; return r;
-  },
-  thunder: (S) => {
-    // 雷 · manifest · imaginary → physical · enforce every ring ≥ 1
-    return S.map(v => Math.max(1, v || 0));
-  },
-  echo: (S) => {
-    // 響 · self-reference · mirror the vector (quine seeing itself)
-    return [...S].reverse();
-  },
-  flower: (S) => {
-    // 華 · return · unfold entirely to ground (phi is home)
-    return SPINE.map(() => 0);
-  }
-};
-
-export const OP_META = {
-  fire:    { kanji: '火', arrow: 'i×2',   verb: 'INTENSIFY',   probe: "what's the strongest version of this?" },
-  water:   { kanji: '水', arrow: 'i÷2',   verb: 'CALM',        probe: "what's the quietest version of this?" },
-  void:    { kanji: '空', arrow: 'skip',  verb: 'TRANSCEND',   probe: "what if you don't address this at all?" },
-  thunder: { kanji: '雷', arrow: 'I→P',   verb: 'MANIFEST',    probe: "say it out loud" },
-  echo:    { kanji: '響', arrow: 'mirror', verb: 'SELF-REF',    probe: "say back what you just heard yourself say" },
-  flower:  { kanji: '華', arrow: 'unfold', verb: 'RETURN',      probe: "where does this take you back to?" }
-};
-
-export function applyOp(name, S, ...args) {
-  const fn = OPS[name];
-  if (!fn) throw new Error('unknown op: ' + name);
-  return fn(S, ...args);
+function renderMaekawa() {
+  const pairs = d.maekawaPairs.map(p => `<div class="check-row"><span class="lab">{${p.pair[0]}, ${p.pair[1]}} · ${p.names.join(' · ')}</span><span class="val">|${p.pair[1]}−${p.pair[0]}| = 2 ✓</span></div>`).join('');
+  const orphan = `<div class="check-row"><span class="lab">orphan · ${d.orphan.name} (p=${d.orphan.prime})</span><span class="val warn">${d.orphan.note}</span></div>`;
+  const ground = `<div class="check-row"><span class="lab">ground · ${d.ground.name} (p=${d.ground.prime})</span><span class="val">${d.ground.note}</span></div>`;
+  const resolver = `<div class="check-row"><span class="lab">resolver · ${d.resolver.name} (p=${d.resolver.prime})</span><span class="val">${d.resolver.note}</span></div>`;
+  el.innerHTML = pairs + orphan + ground + resolver;
 }
-
-// ============================================================================
-// KAWASAKI · flat-foldability = compression precondition
-// alternating angle sum = 0 → state can compress through bandwidth-limited channel
-// ============================================================================
-
-export function kawasakiSum(angles) {
-  let sum = 0;
-  for (let i = 0; i < angles.length; i++) sum += (i % 2 === 0 ? 1 : -1) * angles[i];
-  return sum;
+function renderDecay() {
+  const profile = attenuationProfile();
+  el.innerHTML = profile.map(p => {
+    const pct = p.surviveAsPercent;
+    return `<div class="decay-row"><span class="glyph">${p.glyph}</span><div class="bar-wrap"><div class="bar" style="width:${Math.min(100, pct)}%"></div></div><span class="pct">${pct.toFixed(2)}%</span><span class="name">${p.name} (ring ${p.ring})</span></div>`;
+  }).join('');
 }
-
-export function kawasakiFlat(angles, tol = 1e-9) {
-  return Math.abs(kawasakiSum(angles)) < tol;
+function renderIsa95() {
+  el.innerHTML = ISA95_LAYERS.map(l => `<div class="isa-row"><span class="lv">L${l.level}</span><span class="gl">${l.glyph}</span><span class="layer">${l.layer}</span><span class="role">${l.role}</span></div>`).join('');
 }
-
-// state-vector variant: does the ring-energy pattern alternate around zero?
-export function kawasakiFlatState(S, tol = 1e-9) {
-  return kawasakiFlat(S, tol);
+function renderProbe(text) {
+  const r = probeFromKappa(0.618, text);
 }
-
-// ============================================================================
-// MAEKAWA · topological invariant
-// |mountain folds − valley folds| = 2 · always
-// ============================================================================
-
-export function maekawaValid(mountainCount, valleyCount) {
-  return Math.abs(mountainCount - valleyCount) === 2;
+function renderAll() {
+  updateFoldNum();
+  updateKawasaki();
 }
-
-// SPINE DECOMPOSITION (Maekawa-forced)
-export const SPINE_DECOMP = {
-  maekawaPairs: [
-    { pair: [3, 5],   names: ['perception', 'gate'],       vertex: 'perception-structure' },
-    { pair: [11, 13], names: ['naming', 'observation'],    vertex: 'cognitive' }
-  ],
-  orphan:   { prime: 7,  name: 'heart',      note: 'unpaired · ♡ · TIME · where experience lives' },
-  ground:   { prime: 2,  name: 'ground',     note: 'thickest shield · not in Maekawa pair' },
-  resolver: { prime: 17, name: 'resolution', note: 'wraps back to ● · closes the loop' }
-};
-
-// ============================================================================
-// SIGNAL DECAY · κ per layer crossing
-// signal from depth d reaching ground = κ^d
-// ============================================================================
-
-export function signalSurvival(depth, κ = KAPPA) {
-  return Math.pow(κ, depth);
-}
-
-// fifty-cent-fix math: thin ONE layer at depth d, how much more signal?
-export function unclogGain(depth, layersCleared = 1, κ = KAPPA) {
-  if (layersCleared >= depth) return Infinity;
-  return signalSurvival(depth - layersCleared, κ) / signalSurvival(depth, κ);
-}
-
-// full attenuation profile across the 7 rings
-export function attenuationProfile(κ = KAPPA) {
-  return SPINE.map((_, i) => ({
-    ring: i,
-    glyph: SPINE_GLYPHS[i],
-    name: SPINE_NAMES[i],
-    survivalToGround: signalSurvival(i, κ),
-    surviveAsPercent: (signalSurvival(i, κ) * 100)
-  }));
-}
-
-// ============================================================================
-// ISA-95 ALIGNMENT
-// factory automation standard · same architecture as 7 rings
-// ============================================================================
-
-export const ISA95_LAYERS = [
-  { level: 0, glyph: '●',  ring: 0,   layer: 'physical',   role: 'factory floor · sensors · actuators' },
-  { level: 1, glyph: '〜', ring: 1,   layer: 'sensing',    role: 'raw signal ingest · perception layer' },
-  { level: 2, glyph: '┃♡', rings: [2,3], layer: 'control', role: 'structure + emotion · processing' },
-  { level: 3, glyph: '△',  ring: 4,   layer: 'operations', role: 'cognitive management · MES' },
-  { level: 4, glyph: '◐',  ring: 5,   layer: 'business',   role: 'observation / strategy · ERP' },
-  { level: 5, glyph: '◯',  ring: 6,   layer: 'enterprise', role: 'full resolution · cross-plant' }
-];
-
-export function ringToISA95(ring) {
-  if (ring <= 1) return ISA95_LAYERS[ring];
-  if (ring === 2 || ring === 3) return ISA95_LAYERS[2];
-  return ISA95_LAYERS[ring - 1];
-}
-
-// ============================================================================
-// KAPPA CLASSIFIER · natural language → depth band
-// FallMirror-style probe scoring
-// ============================================================================
-
-const BAND_MARKERS = {
-  ground:      ["can't stop", "swept away", "caught in", "stuck in", "taking over"],
-  perception:  ['i notice', 'i sense', 'feels like', 'i realise'],
-  gate:        ['going through', 'passing', 'letting it', 'stepping into'],
-  heart:       ['i feel', 'sad', 'angry', 'love', 'hurts', 'lonely', 'joy', 'grief'],
-  naming:      ["it's called", 'this is', 'the reason', 'because of', 'i understand'],
-  recognition: ['watching myself', 'i see myself', 'who is watching', 'observer'],
-  collapse:    ['nothing left', 'gone', 'empty of everything', 'no ground']
-};
-
-export function classifyKappaBand(text) {
-  const t = ' ' + text.toLowerCase() + ' ';
-  let best = { name: 'ground', score: 0 };
-  for (const [band, keys] of Object.entries(BAND_MARKERS)) {
-    let score = 0;
-    for (const k of keys) if (t.includes(k)) score++;
-    if (score > best.score) best = { name: band, score };
-  }
-  return KAPPA_BANDS.find(b => b.name === best.name);
-}
-
-// ============================================================================
-// PROBE SELECTOR · route the 6 ops through natural-language prompts
-// (public UI stays plain English; internal representation is the 6 ops)
-// ============================================================================
-
-export function pickOpForBand(bandName) {
-  // heuristic: match op to depth band
-  const map = {
-    ground:      'thunder',   // manifest to move up from stuck-in-thought
-    perception:  'water',     // calm to stay with raw sensing
-    gate:        'echo',      // reflect back what's passing through
-    heart:       'fire',      // intensify to deepen contact with feeling
-    naming:      'water',     // cool the label-making urge
-    recognition: 'echo',      // mirror the observer to itself
-    collapse:    'flower'     // return · unfold to ground · rest
+// tabs
+  t.onclick = () => {
+    t.classList.add('on');
   };
-  const opName = map[bandName] || 'echo';
-  return { name: opName, ...OP_META[opName] };
-}
-
-export function probeFromKappa(κ, text) {
-  const band = text ? classifyKappaBand(text) : depthBand(κ);
-  const op = pickOpForBand(band.name);
-  return { band, op, probe: op.probe };
-}
-
-// ============================================================================
-// DEFAULT EXPORT · one namespace object for convenience
-// ============================================================================
-
-export default {
-  SPINE, SPINE_GLYPHS, SPINE_NAMES, SPINE_ISA95,
-  PHI, KAPPA, OMEGA, THETA_DEG, THETA_STEP,
-  BASELINE,
-  foldNumber, unfoldState, stateSum, stateSignature,
-  KAPPA_BANDS, depthBand, isOrphanZone,
-  OPS, OP_META, applyOp,
-  kawasakiSum, kawasakiFlat, kawasakiFlatState,
-  maekawaValid, SPINE_DECOMP,
-  signalSurvival, unclogGain, attenuationProfile,
-  ISA95_LAYERS, ringToISA95,
-  classifyKappaBand, pickOpForBand, probeFromKappa
+});
+// presets
+  b.onclick = () => { state = b.dataset.preset.split(',').map(n => parseInt(n)); renderStateVector(); };
+});
+});
+// unfold
+  const S = unfoldState(F);
+  if (S) { state = S; renderStateVector(); out.textContent = `→ [${S.join(', ')}]`; }
+  else out.textContent = `→ null (F=${F} has non-spine factors)`;
 };
+// reset
+// κ slider
+// decay calc
+  const before = signalSurvival(d) * 100;
+  const after = signalSurvival(d - c) * 100;
+  const gain = unclogGain(d, c);
+};
+// probe input
+// bootstrap
+renderStateVector();
+renderOpsGrid();
+renderOpsLog();
+renderKappaView();
+renderMaekawa();
+renderDecay();
+renderIsa95();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+// Named exports for the primary API surface
+export { renderStateVector };
+export { updateFoldNum };
+export { updateKawasaki };
+export { renderOpsGrid };
+export { renderOpsLog };
+export { renderKappaView };
+export { renderMaekawa };
+export { renderDecay };
+export { renderIsa95 };
+export { renderProbe };
+
+export { F };
+export { S };
